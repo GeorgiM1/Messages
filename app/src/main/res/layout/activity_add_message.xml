@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="com.example.android.messages.AddMessageActivity">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+    <TextView
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="10dp"
+        android:text="@string/type_your_message"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/msg_edittext"
+        android:hint="@string/enter_text_here"
+        android:layout_margin="10dp"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+        <TextView
+            android:text="@string/type_phone_number"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:textColor="@color/white"
+            android:id="@+id/phone_numer"
+            android:inputType="phone"
+            android:textColorHint="@color/white"
+            android:hint="@string/enter_phone_here"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    <Button
+        android:textColor="@color/white"
+        android:id="@+id/date_and_time"
+        android:text="@string/date_and_time"
+        android:layout_margin="10dp"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_margin="40dp"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/date_and_time_txtView"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_marginTop="80dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <Button
+            android:textColor="@color/white"
+            android:id="@+id/schedule_btn"
+            android:text="Schedule"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <Button
+            android:textColor="@color/white"
+            android:id="@+id/send_btn"
+            android:text="Send now"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+</LinearLayout>
+</LinearLayout>
