@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.android.messages.Preferences.PreferencesManager;
+import com.example.android.messages.Receivers.NetworkReceiver;
 
 import java.util.Calendar;
 
@@ -42,6 +46,9 @@ public class AddMessageActivity extends AppCompatActivity {
     int yearSet, monthSet, daySey, hourSet, minuteSet;
     String mPhoneNumber;
     String mSmsTxt;
+   TimeInfo timeInfo;
+   NetworkReceiver mNetworkReceiver = new NetworkReceiver();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +79,14 @@ public class AddMessageActivity extends AppCompatActivity {
                             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                                 hourSet = i;
                                 minuteSet = i1;
-                                mDateTime.setText("Date :   " + daySey +
-                                        "/" + monthSet
-                                        + "/" + yearSet
-                                        + "\n"
-                                        + "Time :    " + hourSet + ":" + minuteSet);
+                                mDateTime.setText("Date :   " + daySey + "/" + monthSet + "/" + yearSet + "\n" + "Time :    " + hourSet + ":" + minuteSet);
 
                             }
                         }, hour, minute, true);
                         timePickerDialog.show();
+                        timeInfo = new TimeInfo(yearSet,monthSet,daySey,hourSet,minuteSet);
+                        PreferencesManager.addTimeInfo(timeInfo,AddMessageActivity.this);
+
                     }
                 });
 
@@ -115,6 +121,17 @@ public class AddMessageActivity extends AppCompatActivity {
 
             }
         });
+        mScheduleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                registerReceiver(mNetworkReceiver,new IntentFilter());
+
+            }
+        });
+
+
+
+
 
     }
     private void requestSmsPermission() {
@@ -142,5 +159,7 @@ public class AddMessageActivity extends AppCompatActivity {
         }
 
     }
+
+
 }
 
