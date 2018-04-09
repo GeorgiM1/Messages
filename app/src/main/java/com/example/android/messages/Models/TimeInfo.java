@@ -1,4 +1,4 @@
-package com.example.android.messages;
+package com.example.android.messages.Models;
 
 import java.io.Serializable;
 
@@ -6,12 +6,13 @@ import java.io.Serializable;
  * Created by pc on 4/8/2018.
  */
 
-public class TimeInfo implements Serializable{
+public class TimeInfo implements Serializable {
     int year;
     int month;
     int day;
     int hour;
     int minute;
+
 
     public TimeInfo(int year, int month, int day, int hour, int minute) {
         this.year = year;

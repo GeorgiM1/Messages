@@ -1,18 +1,24 @@
 package com.example.android.messages.Models;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * Created by pc on 4/6/2018.
  */
 
-public class MsgModel {
+public class MsgModel implements Serializable {
     String user;
     String messageTxt;
-    String sentAt;
+    Date sendAt;
 
-    public MsgModel(String user, String messageTxt, String sentAt) {
+    public MsgModel() {
+    }
+
+    public MsgModel(String user, String messageTxt, Date sendAt) {
         this.user = user;
         this.messageTxt = messageTxt;
-        this.sentAt = sentAt;
+        this.sendAt = sendAt;
     }
 
     public String getUser() {
@@ -23,7 +29,19 @@ public class MsgModel {
         return messageTxt;
     }
 
-    public String getSentAt() {
-        return sentAt;
+    public Date getSendAt() {
+        return sendAt;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setMessageTxt(String messageTxt) {
+        this.messageTxt = messageTxt;
+    }
+
+    public void setSendAt(Date sendAt) {
+        this.sendAt = sendAt;
     }
 }

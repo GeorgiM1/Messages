@@ -3,11 +3,11 @@
     <string name="action_settings">Settings</string>
     <string name="user_num">User Num</string>
     <string name="send_at">Send at</string>
-    <string name="message_of_txt">Message of txt</string>
     <string name="type_your_message">Type your message :</string>
     <string name="choose_date_and_time">Choose date and time :</string>
     <string name="enter_text_here">Enter text here</string>
     <string name="date_and_time">Date and Time</string>
     <string name="type_phone_number">Type phone number :</string>
     <string name="enter_phone_here">Enter phone here</string>
+    <string name="text_of_the_message">Text of the message</string>
 </resources>

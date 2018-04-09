@@ -18,6 +18,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+/*
+Vo ova activity kje se pravat povici do bazata i onResponse bi gi setiral vrednostite na na modelot. Ova activity bi bilo lista na zakazani SMS
+poraki.
+ */
 
 public class MessagesActivity extends AppCompatActivity {
     CustomAdapter mCustomAdapter;

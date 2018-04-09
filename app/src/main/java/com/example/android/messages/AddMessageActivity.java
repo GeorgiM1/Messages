@@ -1,11 +1,13 @@
 package com.example.android.messages;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.content.IntentFilter;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,13 +23,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.android.messages.Models.MsgModel;
+import com.example.android.messages.Models.TimeInfo;
 import com.example.android.messages.Preferences.PreferencesManager;
-import com.example.android.messages.Receivers.NetworkReceiver;
+import com.example.android.messages.Receivers.Receiver;
 
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+/*
+Vo ova ak
+ */
 
 public class AddMessageActivity extends AppCompatActivity {
     @BindView(R.id.date_and_time)
@@ -46,8 +53,10 @@ public class AddMessageActivity extends AppCompatActivity {
     int yearSet, monthSet, daySey, hourSet, minuteSet;
     String mPhoneNumber;
     String mSmsTxt;
-   TimeInfo timeInfo;
-   NetworkReceiver mNetworkReceiver = new NetworkReceiver();
+    String SENT = "com.android.RECEIVER_ACTION";
+    TimeInfo timeInfo;
+    MsgModel msgModel = new MsgModel();
+    PendingIntent pendingIntent;
 
 
     @Override
@@ -59,42 +68,14 @@ public class AddMessageActivity extends AppCompatActivity {
         mDateTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-                hour = calendar.get(Calendar.HOUR);
-                minute = calendar.get(Calendar.MINUTE);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AddMessageActivity.this);
-                datePickerDialog.show();
-                datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        yearSet = i;
-                        monthSet = i1 + 1;
-                        daySey = i2;
-                        TimePickerDialog timePickerDialog = new TimePickerDialog(AddMessageActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                hourSet = i;
-                                minuteSet = i1;
-                                mDateTime.setText("Date :   " + daySey + "/" + monthSet + "/" + yearSet + "\n" + "Time :    " + hourSet + ":" + minuteSet);
-
-                            }
-                        }, hour, minute, true);
-                        timePickerDialog.show();
-                        timeInfo = new TimeInfo(yearSet,monthSet,daySey,hourSet,minuteSet);
-                        PreferencesManager.addTimeInfo(timeInfo,AddMessageActivity.this);
-
-                    }
-                });
+                setmDateTime();
 
             }
         });
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 requestSmsPermission();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddMessageActivity.this);
@@ -112,7 +93,7 @@ public class AddMessageActivity extends AppCompatActivity {
                         mPhoneNumber = mPhoneNumberEdittext.getText().toString();
                         mSmsTxt = mMsgTxtEdittext.getText().toString();
 
-                        SmsManager.getDefault().sendTextMessage(mPhoneNumber,null,mSmsTxt,null,null);
+                        SmsManager.getDefault().sendTextMessage(mPhoneNumber, null, mSmsTxt, null, null);
 
                     }
                 });
@@ -124,16 +105,37 @@ public class AddMessageActivity extends AppCompatActivity {
         mScheduleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registerReceiver(mNetworkReceiver,new IntentFilter());
+                Calendar calendar = Calendar.getInstance();
+                Calendar calendar1 = (Calendar) calendar.clone();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar1.set(Calendar.YEAR, yearSet);
+                calendar1.set(Calendar.MONTH, monthSet);
+                calendar1.set(Calendar.DAY_OF_MONTH, daySey);
+                calendar1.set(Calendar.HOUR_OF_DAY, hourSet);
+                calendar1.set(Calendar.MINUTE, minuteSet);
+                msgModel.setUser(mPhoneNumberEdittext.getText().toString());
+                msgModel.setMessageTxt(mMsgTxtEdittext.getText().toString());
+                msgModel.setSendAt(calendar1.getTime());
+                PreferencesManager.userInfo(msgModel, AddMessageActivity.this);
+                PreferencesManager.addTxtMsg(mMsgTxtEdittext.getText().toString(), AddMessageActivity.this);
+                PreferencesManager.addPhoneNumber(mPhoneNumberEdittext.getText().toString(), AddMessageActivity.this);
+
+
+                Intent myIntent = new Intent(AddMessageActivity.this, Receiver.class);
+                myIntent.setAction(SENT);
+                pendingIntent = PendingIntent.getBroadcast(AddMessageActivity.this, 0, myIntent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), pendingIntent);
+
 
             }
         });
 
 
-
-
-
     }
+
     private void requestSmsPermission() {
         String permission = Manifest.permission.SEND_SMS;
         int grant = ContextCompat.checkSelfPermission(this, permission);
@@ -144,19 +146,56 @@ public class AddMessageActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(AddMessageActivity.this,"permission granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddMessageActivity.this, "permission granted", Toast.LENGTH_SHORT).show();
 
 
             } else {
-                Toast.makeText(AddMessageActivity.this,"permission not granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddMessageActivity.this, "permission not granted", Toast.LENGTH_SHORT).show();
             }
         }
+
+    }
+
+    public void setmDateTime() {
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR);
+        minute = calendar.get(Calendar.MINUTE);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddMessageActivity.this);
+        datePickerDialog.show();
+        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                yearSet = i;
+                daySey = i2;
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddMessageActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        hourSet = i;
+                        minuteSet = i1;
+                        mDateTime.setText("Date :   " + daySey + "/" + monthSet + "/" + yearSet + "\n" + "Time :    " + hourSet + ":" + minuteSet);
+
+                    }
+                }, hour, minute, true);
+                timePickerDialog.show();
+                timeInfo = new TimeInfo(yearSet, monthSet, daySey, hourSet, minuteSet);
+                PreferencesManager.addTimeInfo(timeInfo, AddMessageActivity.this);
+                msgModel.setUser(mPhoneNumberEdittext.getText().toString());
+                msgModel.setMessageTxt(mMsgTxtEdittext.getText().toString());
+                PreferencesManager.userInfo(msgModel, AddMessageActivity.this);
+
+            }
+        });
 
     }
 
