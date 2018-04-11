@@ -118,16 +118,37 @@ public class AddMessageActivity extends AppCompatActivity {
                 PreferencesManager.userInfo(msgModel, AddMessageActivity.this);
                 PreferencesManager.addTxtMsg(mMsgTxtEdittext.getText().toString(), AddMessageActivity.this);
                 PreferencesManager.addPhoneNumber(mPhoneNumberEdittext.getText().toString(), AddMessageActivity.this);
-                long cal = calendar1.getTimeInMillis();
+                final long cal = calendar1.getTimeInMillis();
                 PreferencesManager.addDate(cal, AddMessageActivity.this);
-                Toast.makeText(AddMessageActivity.this, "Sms scheduled", Toast.LENGTH_LONG).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddMessageActivity.this);
+                builder.setTitle("Schedule Message");
+                builder.setMessage("You are scheduling a sms message. Do you want to continue?");
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        requestSmsPermission();
+                        Toast.makeText(AddMessageActivity.this, "Sms scheduled", Toast.LENGTH_LONG).show();
 
 
-                Intent myIntent = new Intent(AddMessageActivity.this, Receiver.class);
-                myIntent.setAction(SENT);
-                pendingIntent = PendingIntent.getBroadcast(AddMessageActivity.this, 0, myIntent, 0);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal, pendingIntent);
+                        Intent myIntent = new Intent(AddMessageActivity.this, Receiver.class);
+                        myIntent.setAction(SENT);
+                        pendingIntent = PendingIntent.getBroadcast(AddMessageActivity.this, 0, myIntent, 0);
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal, pendingIntent);
+
+                    }
+                });
+                builder.create().show();
+
+
+
 
 
             }
