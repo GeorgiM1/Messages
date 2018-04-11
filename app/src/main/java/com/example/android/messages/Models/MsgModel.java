@@ -8,21 +8,21 @@ import java.util.Date;
  */
 
 public class MsgModel implements Serializable {
-    String user;
+    String userPhone;
     String messageTxt;
     Date sendAt;
 
     public MsgModel() {
     }
 
-    public MsgModel(String user, String messageTxt, Date sendAt) {
-        this.user = user;
+    public MsgModel(String userPhone, String messageTxt, Date sendAt) {
+        this.userPhone = userPhone;
         this.messageTxt = messageTxt;
         this.sendAt = sendAt;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserPhone() {
+        return userPhone;
     }
 
     public String getMessageTxt() {
@@ -33,8 +33,8 @@ public class MsgModel implements Serializable {
         return sendAt;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
     }
 
     public void setMessageTxt(String messageTxt) {

@@ -46,10 +46,8 @@ public class AlarmService extends Service {
         SharedPreferences preferences = getSharedPreferences("MySharedPreferencesFile", Activity.MODE_PRIVATE);
         phone = PreferencesManager.getPhone(AlarmService.this);
         txt = PreferencesManager.getText(AlarmService.this);
-
-
         SmsManager.getDefault().sendTextMessage(phone, null, txt, null, null);
-        Toast.makeText(AlarmService.this, "Sms scheduled", Toast.LENGTH_LONG).show();
+        Toast.makeText(AlarmService.this, "Sms sent", Toast.LENGTH_LONG).show();
         stopSelf();
 
 

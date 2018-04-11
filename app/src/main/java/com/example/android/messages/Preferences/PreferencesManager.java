@@ -33,6 +33,12 @@ public class PreferencesManager {
     public static void addTxtMsg(String txt, Context c) {
         getPreferences(c).edit().putString("txt", txt).apply();
     }
+    public static void addDate (long calendar, Context context){
+        getPreferences(context).edit().putLong("date", calendar).apply();
+    }
+    public static long getDate (Context context){
+        return getPreferences(context).getLong("date", 0);
+    }
 
     public static String getText(Context c) {
         return getPreferences(c).getString("txt", "");

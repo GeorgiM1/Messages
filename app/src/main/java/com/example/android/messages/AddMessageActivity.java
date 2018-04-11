@@ -105,29 +105,29 @@ public class AddMessageActivity extends AppCompatActivity {
         mScheduleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                Calendar calendar1 = (Calendar) calendar.clone();
-                calendar.setTimeInMillis(System.currentTimeMillis());
+                Calendar calendar1 = Calendar.getInstance();
+
                 calendar1.set(Calendar.YEAR, yearSet);
                 calendar1.set(Calendar.MONTH, monthSet);
                 calendar1.set(Calendar.DAY_OF_MONTH, daySey);
                 calendar1.set(Calendar.HOUR_OF_DAY, hourSet);
                 calendar1.set(Calendar.MINUTE, minuteSet);
-                msgModel.setUser(mPhoneNumberEdittext.getText().toString());
+                msgModel.setUserPhone(mPhoneNumberEdittext.getText().toString());
                 msgModel.setMessageTxt(mMsgTxtEdittext.getText().toString());
                 msgModel.setSendAt(calendar1.getTime());
                 PreferencesManager.userInfo(msgModel, AddMessageActivity.this);
                 PreferencesManager.addTxtMsg(mMsgTxtEdittext.getText().toString(), AddMessageActivity.this);
                 PreferencesManager.addPhoneNumber(mPhoneNumberEdittext.getText().toString(), AddMessageActivity.this);
+                long cal = calendar1.getTimeInMillis();
+                PreferencesManager.addDate(cal, AddMessageActivity.this);
+                Toast.makeText(AddMessageActivity.this, "Sms scheduled", Toast.LENGTH_LONG).show();
 
 
                 Intent myIntent = new Intent(AddMessageActivity.this, Receiver.class);
                 myIntent.setAction(SENT);
                 pendingIntent = PendingIntent.getBroadcast(AddMessageActivity.this, 0, myIntent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), pendingIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal, pendingIntent);
 
 
             }
@@ -177,6 +177,7 @@ public class AddMessageActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                 yearSet = i;
+                monthSet = i1;
                 daySey = i2;
                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddMessageActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
@@ -190,7 +191,7 @@ public class AddMessageActivity extends AppCompatActivity {
                 timePickerDialog.show();
                 timeInfo = new TimeInfo(yearSet, monthSet, daySey, hourSet, minuteSet);
                 PreferencesManager.addTimeInfo(timeInfo, AddMessageActivity.this);
-                msgModel.setUser(mPhoneNumberEdittext.getText().toString());
+                msgModel.setUserPhone(mPhoneNumberEdittext.getText().toString());
                 msgModel.setMessageTxt(mMsgTxtEdittext.getText().toString());
                 PreferencesManager.userInfo(msgModel, AddMessageActivity.this);
 
