@@ -8,40 +8,58 @@ import java.util.Date;
  */
 
 public class MsgModel implements Serializable {
-    String userPhone;
-    String messageTxt;
-    Date sendAt;
+    String phone_id;
+    String notice_text;
+    Date date;
+    int time;
+    String notice_ID;
 
     public MsgModel() {
     }
 
-    public MsgModel(String userPhone, String messageTxt, Date sendAt) {
-        this.userPhone = userPhone;
-        this.messageTxt = messageTxt;
-        this.sendAt = sendAt;
+    public int getTime() {
+        return time;
     }
 
-    public String getUserPhone() {
-        return userPhone;
+    public void setTime(int time) {
+        this.time = time;
     }
 
-    public String getMessageTxt() {
-        return messageTxt;
+    public String getNotice_ID() {
+        return notice_ID;
     }
 
-    public Date getSendAt() {
-        return sendAt;
+    public void setNotice_ID(String notice_ID) {
+        this.notice_ID = notice_ID;
     }
 
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+    public MsgModel(String phone_id, String notice_text, Date date) {
+        this.phone_id = phone_id;
+        this.notice_text = notice_text;
+        this.date = date;
     }
 
-    public void setMessageTxt(String messageTxt) {
-        this.messageTxt = messageTxt;
+    public String getPhone_id() {
+        return phone_id;
     }
 
-    public void setSendAt(Date sendAt) {
-        this.sendAt = sendAt;
+    public String getNotice_text() {
+        return notice_text;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setPhone_id(String phone_id) {
+        this.phone_id = phone_id;
+    }
+
+    public void setNotice_text(String notice_text) {
+        this.notice_text = notice_text;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

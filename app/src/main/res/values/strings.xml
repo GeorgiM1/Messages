@@ -10,4 +10,10 @@
     <string name="type_phone_number">Type phone number :</string>
     <string name="enter_phone_here">Enter phone here</string>
     <string name="text_of_the_message">Text of the message</string>
+    <string name="set_up_your_daily_sync_time_and_sync_frequency">Set up your daily sync time and sync frequency</string>
+    <string name="set_daily_sync_time">Set daily sync time</string>
+    <string name="set_sync_frequency">Set sync frequency</string>
+    <string name="set_up_daily_sync_time_and_sync_frequency">Set up daily sync time and sync frequency</string>
+    <string name="daily_sync_time_set_at">Daily sync time set at :</string>
+
 </resources>
