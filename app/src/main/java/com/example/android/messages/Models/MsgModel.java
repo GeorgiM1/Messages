@@ -8,11 +8,13 @@ import java.util.Date;
  */
 
 public class MsgModel implements Serializable {
-    String phone_id;
-    String notice_text;
+    String notice_ID;
     Date date;
     int time;
-    String notice_ID;
+    String Phone_ID;
+    String notice_text;
+
+
 
     public MsgModel() {
     }
@@ -33,14 +35,14 @@ public class MsgModel implements Serializable {
         this.notice_ID = notice_ID;
     }
 
-    public MsgModel(String phone_id, String notice_text, Date date) {
-        this.phone_id = phone_id;
+    public MsgModel(String Phone_ID, String notice_text, Date date) {
+        this.Phone_ID = Phone_ID;
         this.notice_text = notice_text;
         this.date = date;
     }
 
-    public String getPhone_id() {
-        return phone_id;
+    public String getPhone_ID() {
+        return Phone_ID;
     }
 
     public String getNotice_text() {
@@ -51,8 +53,8 @@ public class MsgModel implements Serializable {
         return date;
     }
 
-    public void setPhone_id(String phone_id) {
-        this.phone_id = phone_id;
+    public void setPhone_ID(String phone_ID) {
+        this.Phone_ID = phone_ID;
     }
 
     public void setNotice_text(String notice_text) {

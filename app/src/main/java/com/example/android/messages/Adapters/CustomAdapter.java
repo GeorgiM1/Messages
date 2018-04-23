@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.messages.Api.RestApi;
 import com.example.android.messages.Models.MsgModel;
 import com.example.android.messages.R;
 
@@ -22,11 +23,13 @@ import butterknife.ButterKnife;
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder>{
 
     Context context;
-    ArrayList<MsgModel> msgModels;
+   ArrayList<MsgModel> msgModel;
 
-    public CustomAdapter (Context context, ArrayList<MsgModel>msgModels){
+    RestApi api;
+
+    public CustomAdapter (Context context, ArrayList<MsgModel> msgModels){
         this.context=context;
-        this.msgModels=msgModels;
+        this.msgModel=msgModels;
     }
 
     @Override
@@ -35,12 +38,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+        api = new RestApi(context);
         return viewHolder;
 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+
+
+
 
     }
 

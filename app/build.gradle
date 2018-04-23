@@ -9,7 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "BASE_URL", "\"api_url\""
+        buildConfigField "String", "BASE_URL", "\"https://my-json-server.typicode.com/\""
     }
     buildTypes {
         release {

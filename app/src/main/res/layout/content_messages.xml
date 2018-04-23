@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_messages">
 
         <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="70dp"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

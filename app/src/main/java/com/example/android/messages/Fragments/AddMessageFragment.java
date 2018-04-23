@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.text.format.DateFormat;
@@ -68,8 +66,6 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
     TimeInfo timeInfo;
     MsgModel msgModel = new MsgModel();
     PendingIntent pendingIntent;
-    @BindView(R.id.setupBTN)
-    Button setupBtn;
     @BindView(R.id.contactsBTN)
     Button mContactsBtn;
 
@@ -79,17 +75,8 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_message_fragment, null);
         mUnnbinder = ButterKnife.bind(this, view);
-        setupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager manager = getFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.placeholder, new SetupFragment(), "Setup");
-                transaction.addToBackStack(null);
-                transaction.commit();
 
-            }
-        });
+
 
         mContactsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +135,7 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
                 calendar1.set(Calendar.DAY_OF_MONTH, daySey);
                 calendar1.set(Calendar.HOUR_OF_DAY, hourSet);
                 calendar1.set(Calendar.MINUTE, minuteSet);
-                msgModel.setPhone_id(mPhoneNumberEdittext.getText().toString());
+                msgModel.setPhone_ID(mPhoneNumberEdittext.getText().toString());
                 msgModel.setNotice_text(mMsgTxtEdittext.getText().toString());
                 msgModel.setDate(calendar1.getTime());
                 PreferencesManager.userInfo(msgModel, getActivity());

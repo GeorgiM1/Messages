@@ -28,6 +28,8 @@ public class SetupFragment extends android.support.v4.app.Fragment implements Gr
     Button mDailySyncBtn;
     @BindView(R.id.daily_sync_TEXT)
     TextView mDailySyncText;
+    @BindView(R.id.sync_frequency_BTN)
+    Button mSyncFrequency;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class SetupFragment extends android.support.v4.app.Fragment implements Gr
 
             }
         });
+
+
         return view;
     }
 

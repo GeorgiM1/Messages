@@ -15,9 +15,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -29,19 +33,25 @@ public class ContactsActivity extends AppCompatActivity {
     private Handler updateBarHandler;
     private String phoneNumber = null;
 
+    private String name = null;
+
     ArrayList<String> contactList;
     Cursor cursor;
     int counter;
-
+    @BindView(R.id.Search_bar)
+    EditText mSearchBar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+        ButterKnife.bind(this);
+        mSearchBar.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.search), null,null,null);
 
         pDialog = new ProgressDialog(ContactsActivity.this);
         pDialog.setMessage("Reading contacts...");
         pDialog.setCancelable(false);
         pDialog.show();
+
 
         mListView = (ListView) findViewById(R.id.list);
         updateBarHandler = new Handler();
@@ -142,7 +152,7 @@ public class ContactsActivity extends AppCompatActivity {
                 });
 
                 String contact_id = cursor.getString(cursor.getColumnIndex(_ID));
-                String name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
+                name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
 
                 int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(HAS_PHONE_NUMBER)));
 
