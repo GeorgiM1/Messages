@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.messages.Adapters.CustomAdapter;
 import com.example.android.messages.Api.RestApi;
@@ -30,13 +31,14 @@ import retrofit2.Response;
 
 
 public class MessagesActivity extends AppCompatActivity {
-    CustomAdapter mCustomAdapter;
+
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
     FloatingActionButton fab;
+    boolean transactionToSync = false;
 
     ArrayList<MsgModel> msgModel;
-
+    CustomAdapter mCustomAdapter;
     RestApi api;
 
     @Override
@@ -46,7 +48,13 @@ public class MessagesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.settings));
-        toolbar.getOverflowIcon().setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_IN);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.getOverflowIcon().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+
+
+
+
+
 
 
         ButterKnife.bind(this);
@@ -62,9 +70,16 @@ public class MessagesActivity extends AppCompatActivity {
                 call.enqueue(new Callback<ArrayList<MsgModel>>() {
                     @Override
                     public void onResponse(Call<ArrayList<MsgModel>> call, Response<ArrayList<MsgModel>> response) {
-                        msgModel = response.body();
-                        mCustomAdapter = new CustomAdapter(MessagesActivity.this, msgModel);
-                        mRecyclerView.setAdapter(mCustomAdapter);
+                        if (response.isSuccessful()) {
+                            msgModel = response.body();
+                            mCustomAdapter = new CustomAdapter(MessagesActivity.this, msgModel);
+                            mRecyclerView.setAdapter(mCustomAdapter);
+                            Toast.makeText(MessagesActivity.this, "Response successful!", Toast.LENGTH_LONG).show();
+//                            PreferencesManager.addPhoneNumber(msgModel.get(1).getPhone_ID(), MessagesActivity.this);
+//                            PreferencesManager.addTxtMsg(msgModel.get(1).getNotice_text(), MessagesActivity.this);
+//                            PreferencesManager.addDate(msgModel.get(1).getDatetime(),MessagesActivity.this);
+
+                        }
                     }
 
                     @Override
@@ -79,10 +94,12 @@ public class MessagesActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
 
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MessagesActivity.this, AddMessageActivity.class));
+
             }
         });
     }
@@ -99,10 +116,11 @@ public class MessagesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.placeholder_messagesActivity, new SetupFragment(), "Setup");
+        transaction.replace(R.id.placeholder_messagesActivity, new SetupFragment());
         transaction.addToBackStack(null);
         transaction.commit();
-        fab.setVisibility(View.GONE);
+
+
 
 
         int id = item.getItemId();
@@ -114,4 +132,6 @@ public class MessagesActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

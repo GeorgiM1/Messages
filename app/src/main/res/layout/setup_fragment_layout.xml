@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <TextView
-        style="@style/Base.TextAppearance.AppCompat.Large"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:gravity="center"
         android:text="@string/set_up_your_daily_sync_time_and_sync_frequency"
      />
@@ -29,7 +29,7 @@
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:text="@string/set_daily_sync_time"
-            android:textColor="@color/white" />
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/sync_frequency_BTN"
@@ -38,12 +38,20 @@
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:text="@string/set_sync_frequency"
-            android:textColor="@color/white" />
+            android:textColor="@color/colorPrimary" />
+        <Button
+            android:id="@+id/sync_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:text="@string/sync_now"
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/daily_sync_TEXT"
             android:layout_margin="10dp"
-            android:textColor="@color/white"
+            android:textColor="@color/bsp_transparent_black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

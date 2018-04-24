@@ -1,16 +1,14 @@
 package com.example.android.messages.Models;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by pc on 4/6/2018.
  */
 
 public class MsgModel implements Serializable {
-    String notice_ID;
-    Date date;
-    int time;
+    int notice_ID;
+    long datetime;
     String Phone_ID;
     String notice_text;
 
@@ -19,26 +17,19 @@ public class MsgModel implements Serializable {
     public MsgModel() {
     }
 
-    public int getTime() {
-        return time;
-    }
 
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-    public String getNotice_ID() {
+    public int getNotice_ID() {
         return notice_ID;
     }
 
-    public void setNotice_ID(String notice_ID) {
+    public void setNotice_ID(int notice_ID) {
         this.notice_ID = notice_ID;
     }
 
-    public MsgModel(String Phone_ID, String notice_text, Date date) {
+    public MsgModel(String Phone_ID, String notice_text, long datetime) {
         this.Phone_ID = Phone_ID;
         this.notice_text = notice_text;
-        this.date = date;
+        this.datetime = datetime;
     }
 
     public String getPhone_ID() {
@@ -49,8 +40,8 @@ public class MsgModel implements Serializable {
         return notice_text;
     }
 
-    public Date getDate() {
-        return date;
+    public long getDatetime() {
+        return datetime;
     }
 
     public void setPhone_ID(String phone_ID) {
@@ -61,7 +52,7 @@ public class MsgModel implements Serializable {
         this.notice_text = notice_text;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDatetime(long datetime) {
+        this.datetime = datetime;
     }
 }

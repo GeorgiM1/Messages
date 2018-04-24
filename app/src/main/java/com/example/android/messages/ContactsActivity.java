@@ -45,7 +45,7 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
-        mSearchBar.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.search), null,null,null);
+//        mSearchBar.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.search), null,null,null);
 
         pDialog = new ProgressDialog(ContactsActivity.this);
         pDialog.setMessage("Reading contacts...");

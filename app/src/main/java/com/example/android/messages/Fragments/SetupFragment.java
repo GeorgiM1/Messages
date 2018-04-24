@@ -1,5 +1,8 @@
 package com.example.android.messages.Fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
@@ -30,12 +33,18 @@ public class SetupFragment extends android.support.v4.app.Fragment implements Gr
     TextView mDailySyncText;
     @BindView(R.id.sync_frequency_BTN)
     Button mSyncFrequency;
+    @BindView(R.id.sync_now)
+    Button mSyncNowBtn;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.setup_fragment_layout, null);
         mUnnbinder = ButterKnife.bind(this, view);
+        Drawable dr = getResources().getDrawable(R.drawable.frequence);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));
+
 
 
         mDailySyncBtn.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +58,8 @@ public class SetupFragment extends android.support.v4.app.Fragment implements Gr
                         DateFormat.is24HourFormat(getActivity()))
     /* ... Set additional options ... */
                         .build();
+                grid.setHeaderColor(getResources().getColor(R.color.colorAccent));
+                grid.setAccentColor(getResources().getColor(R.color.colorAccent));
                 grid.show(getFragmentManager(), "");
 
             }

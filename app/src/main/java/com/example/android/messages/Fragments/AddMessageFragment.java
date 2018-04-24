@@ -13,18 +13,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.messages.ContactsActivity;
 import com.example.android.messages.Models.MsgModel;
-import com.example.android.messages.Models.TimeInfo;
 import com.example.android.messages.Preferences.PreferencesManager;
 import com.example.android.messages.R;
 import com.example.android.messages.Receivers.Receiver;
@@ -46,28 +48,26 @@ import static android.app.Activity.RESULT_OK;
 
 public class AddMessageFragment extends android.support.v4.app.Fragment implements com.philliphsu.bottomsheetpickers.date.DatePickerDialog.OnDateSetListener, BottomSheetTimePickerDialog.OnTimeSetListener {
     private Unbinder mUnnbinder;
-    @BindView(R.id.date_and_time)
-    Button mDateTimeBtn;
     @BindView(R.id.schedule_btn)
-    Button mScheduleBtn;
+    ImageButton mScheduleBtn;
     @BindView(R.id.send_btn)
-    Button mSendBtn;
+    ImageButton mSendBtn;
     @BindView(R.id.date_and_time_txtView)
     TextView mDateTime;
     @BindView(R.id.phone_numer)
     EditText mPhoneNumberEdittext;
     @BindView(R.id.msg_edittext)
     EditText mMsgTxtEdittext;
-    int year, month, day, hour, minute;
+    @BindView(R.id.textView_counter)
+    TextView mTextCounter;
     int yearSet, monthSet, daySey, hourSet, minuteSet;
     String mPhoneNumber;
     String mSmsTxt;
     String SENT = "com.android.RECEIVER_ACTION";
-    TimeInfo timeInfo;
     MsgModel msgModel = new MsgModel();
     PendingIntent pendingIntent;
     @BindView(R.id.contactsBTN)
-    Button mContactsBtn;
+    ImageButton mContactsBtn;
 
 
     @Nullable
@@ -75,26 +75,35 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_message_fragment, null);
         mUnnbinder = ButterKnife.bind(this, view);
+//        if (PreferencesManager.getPhone(getContext()) != null ){
+//            mPhoneNumberEdittext.setText(PreferencesManager.getPhone(getContext()));
+//            final long cal = PreferencesManager.getDatetime(getContext());
+//            Intent myIntent = new Intent(getActivity(), Receiver.class);
+//            myIntent.setAction(SENT);
+//            pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, myIntent, 0);
+//            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, cal, pendingIntent);
+//        }
+        mPhoneNumberEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    mContactsBtn.setVisibility(View.VISIBLE);
+                }
 
+            }
+        });
 
 
         mContactsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              Intent i = new Intent(getActivity(), ContactsActivity.class);
-              startActivityForResult(i, 1000);
+                Intent i = new Intent(getActivity(), ContactsActivity.class);
+                startActivityForResult(i, 1000);
             }
         });
 
 
-
-        mDateTimeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setmDateTime();
-
-            }
-        });
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,20 +113,22 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Send Message");
                 builder.setMessage("You are sending an sms message. Do you want to continue?");
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(Html.fromHtml("<font color='#00A180'>No</font>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 });
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(Html.fromHtml("<font color='#00A180'>Yes</font>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mPhoneNumber = mPhoneNumberEdittext.getText().toString();
                         mSmsTxt = mMsgTxtEdittext.getText().toString();
 
                         SmsManager.getDefault().sendTextMessage(mPhoneNumber, null, mSmsTxt, null, null);
-
+                        mMsgTxtEdittext.setText("");
+                        mPhoneNumberEdittext.setText("");
+                        Toast.makeText(getActivity(), "Sms sent", Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.create().show();
@@ -125,54 +136,64 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
 
             }
         });
+
         mScheduleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar calendar1 = Calendar.getInstance();
+                requestSmsPermission();
+                setmDateTime();
+                mMsgTxtEdittext.setText("");
+                mPhoneNumberEdittext.setText("");
+            }
+        });
+        mMsgTxtEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                calendar1.set(Calendar.YEAR, yearSet);
-                calendar1.set(Calendar.MONTH, monthSet);
-                calendar1.set(Calendar.DAY_OF_MONTH, daySey);
-                calendar1.set(Calendar.HOUR_OF_DAY, hourSet);
-                calendar1.set(Calendar.MINUTE, minuteSet);
-                msgModel.setPhone_ID(mPhoneNumberEdittext.getText().toString());
-                msgModel.setNotice_text(mMsgTxtEdittext.getText().toString());
-                msgModel.setDate(calendar1.getTime());
-                PreferencesManager.userInfo(msgModel, getActivity());
-                PreferencesManager.addTxtMsg(mMsgTxtEdittext.getText().toString(), getActivity());
-                PreferencesManager.addPhoneNumber(mPhoneNumberEdittext.getText().toString(), getActivity());
-                final long cal = calendar1.getTimeInMillis();
-                PreferencesManager.addDate(cal, getActivity());
+            }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Schedule Message");
-                builder.setMessage("You are scheduling a sms message. Do you want to continue?");
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mTextCounter.setText(String.valueOf(mMsgTxtEdittext.getText().length()));
+                if (mMsgTxtEdittext.getText().length() >= 160){
+                    mMsgTxtEdittext.setEnabled(false);
+                    Toast.makeText(getActivity(), "Maximum characters for SMS reached ", Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        requestSmsPermission();
-                        Toast.makeText(getActivity(), "Sms scheduled", Toast.LENGTH_LONG).show();
-
-
-                        Intent myIntent = new Intent(getActivity(), Receiver.class);
-                        myIntent.setAction(SENT);
-                        pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, myIntent, 0);
-                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
-                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal, pendingIntent);
-
-                    }
-                });
-                builder.create().show();
+                }
 
 
             }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mMsgTxtEdittext.getText().length() > 0 && mPhoneNumberEdittext.getText().length() > 0) {
+                    mScheduleBtn.setVisibility(View.VISIBLE);
+                    mSendBtn.setVisibility(View.VISIBLE);
+                }
+
+            }
         });
+        mPhoneNumberEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mMsgTxtEdittext.getText().length() > 0 && mPhoneNumberEdittext.getText().length() > 0) {
+                    mScheduleBtn.setVisibility(View.VISIBLE);
+                    mSendBtn.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
 
         return view;
     }
@@ -215,7 +236,8 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
     /* ... Set additional options ... */
                 .build();
         grid.show(getFragmentManager(), "");
-
+        grid.setHeaderColor(getResources().getColor(R.color.colorAccent));
+        grid.setAccentColor(getResources().getColor(R.color.colorAccent));
 
 
     }
@@ -226,12 +248,42 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, monthOfYear);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-     //   mText.setText("Date set: " + DateFormat.getDateFormat(this).format(cal.getTime()));
+        //   mText.setText("Date set: " + DateFormat.getDateFormat(this).format(calendar1TimeInMillis.getTime()));
         yearSet = cal.get(Calendar.YEAR);
-        monthSet = cal.get(Calendar.MONTH);;
-        daySey = cal.get(Calendar.DAY_OF_MONTH);;
+        monthSet = cal.get(Calendar.MONTH);
+        daySey = cal.get(Calendar.DAY_OF_MONTH);
+
+        Calendar calendar1 = Calendar.getInstance();
+
+
+        calendar1.set(Calendar.YEAR, yearSet);
+        calendar1.set(Calendar.MONTH, monthSet);
+        calendar1.set(Calendar.DAY_OF_MONTH, daySey);
+        calendar1.set(Calendar.HOUR_OF_DAY, hourSet);
+        calendar1.set(Calendar.MINUTE, minuteSet);
+
+
+        final long calendar1TimeInMillis = calendar1.getTimeInMillis();
+        msgModel.setPhone_ID(mPhoneNumberEdittext.getText().toString());
+        msgModel.setNotice_text(mMsgTxtEdittext.getText().toString());
+        msgModel.setDatetime(calendar1.getTimeInMillis());
+        PreferencesManager.userInfo(msgModel, getActivity());
+        PreferencesManager.addTxtMsg(mMsgTxtEdittext.getText().toString(), getActivity());
+        PreferencesManager.addPhoneNumber(mPhoneNumberEdittext.getText().toString(), getActivity());
+        PreferencesManager.addDate(calendar1TimeInMillis, getActivity());
+
+        Toast.makeText(getActivity(), "Sms scheduled", Toast.LENGTH_LONG).show();
+
+
+        Intent myIntent = new Intent(getActivity(), Receiver.class);
+        myIntent.setAction(SENT);
+        pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, myIntent, 0);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar1TimeInMillis, pendingIntent);
+
 
         mDateTime.setText("Date :   " + daySey + "/" + monthSet + "/" + yearSet + "\n" + "Time :    " + hourSet + ":" + minuteSet);
+
     }
 
     @Override
@@ -240,7 +292,7 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
         cal.set(Calendar.MINUTE, minute);
         DatePickerDialog date = new DatePickerDialog.Builder(
-             this,
+                this,
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH))
@@ -249,7 +301,7 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
         date.show(getFragmentManager(), "");
         hourSet = cal.get(Calendar.HOUR_OF_DAY);
         minuteSet = cal.get(Calendar.MINUTE);
-       // mText.setText("Time set: " + DateFormat.getTimeFormat(this).format(cal.getTime()));
+        // mText.setText("Time set: " + DateFormat.getTimeFormat(this).format(cal.getTime()));
     }
 
     @Override
@@ -263,4 +315,5 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
             }
         }
     }
+
 }

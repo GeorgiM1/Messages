@@ -12,7 +12,7 @@ import retrofit2.http.GET;
  */
 
 public interface ApiService {
-   @GET("GeorgiM1/json-server/messages")
+   @GET("getsmsevents?notice_id=1")
   Call<ArrayList<MsgModel>> getMsgs();
 
 }

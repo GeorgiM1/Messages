@@ -10,6 +10,7 @@ import com.example.android.messages.Fragments.AddMessageFragment;
 
 
 public class AddMessageActivity extends AppCompatActivity {
+    Boolean mShouldFinish = false;
 
 
     @Override
@@ -25,5 +26,7 @@ public class AddMessageActivity extends AppCompatActivity {
 
 
 }
-    }
+
+
+}
 
