@@ -61,8 +61,6 @@ public class MessagesActivity extends AppCompatActivity {
         api = new RestApi(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
-        mCustomAdapter = new CustomAdapter(this, msgModel);
-        mRecyclerView.setAdapter(mCustomAdapter);
         api.checkInternet(new Runnable() {
             @Override
             public void run() {
@@ -71,8 +69,7 @@ public class MessagesActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ArrayList<MsgModel>> call, Response<ArrayList<MsgModel>> response) {
                         if (response.isSuccessful()) {
-                            msgModel = response.body();
-                            mCustomAdapter = new CustomAdapter(MessagesActivity.this, msgModel);
+                            mCustomAdapter = new CustomAdapter(MessagesActivity.this, response.body());
                             mRecyclerView.setAdapter(mCustomAdapter);
                             Toast.makeText(MessagesActivity.this, "Response successful!", Toast.LENGTH_LONG).show();
 //                            PreferencesManager.addPhoneNumber(msgModel.get(1).getPhone_ID(), MessagesActivity.this);
@@ -122,7 +119,6 @@ public class MessagesActivity extends AppCompatActivity {
 
 
 
-
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -133,5 +129,13 @@ public class MessagesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void showFloatingActionButton() {
+        fab.setVisibility(View.VISIBLE);
+    };
+
+    public void hideFloatingActionButton() {
+        fab.setVisibility(View.INVISIBLE);
+    };
 
 }

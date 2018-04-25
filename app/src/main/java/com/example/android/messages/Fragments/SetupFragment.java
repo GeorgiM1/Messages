@@ -5,17 +5,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.android.messages.Helper.ui.Dialogs;
+import com.example.android.messages.MessagesActivity;
 import com.example.android.messages.R;
 import com.philliphsu.bottomsheetpickers.time.grid.GridTimePickerDialog;
-
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,26 +44,14 @@ public class SetupFragment extends android.support.v4.app.Fragment implements Gr
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));
 
-
+        ((MessagesActivity) getActivity()).hideFloatingActionButton();
 
         mDailySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                GridTimePickerDialog grid = new GridTimePickerDialog.Builder(
-                       SetupFragment.this,
-                        now.get(Calendar.HOUR_OF_DAY),
-                        now.get(Calendar.MINUTE),
-                        DateFormat.is24HourFormat(getActivity()))
-    /* ... Set additional options ... */
-                        .build();
-                grid.setHeaderColor(getResources().getColor(R.color.colorAccent));
-                grid.setAccentColor(getResources().getColor(R.color.colorAccent));
-                grid.show(getFragmentManager(), "");
-
+                Dialogs.showNumberPickerDialog(getActivity(), "mesasage");
             }
         });
-
 
         return view;
     }
@@ -73,6 +60,7 @@ public class SetupFragment extends android.support.v4.app.Fragment implements Gr
     public void onDestroy() {
         super.onDestroy();
         mUnnbinder.unbind();
+        ((MessagesActivity) getActivity()).showFloatingActionButton();
     }
 
     @Override

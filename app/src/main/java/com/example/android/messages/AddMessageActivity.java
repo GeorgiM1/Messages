@@ -21,7 +21,7 @@ public class AddMessageActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.placeholder, new AddMessageFragment());
-        transaction.addToBackStack(null);
+        transaction.disallowAddToBackStack();
         transaction.commit();
 
 

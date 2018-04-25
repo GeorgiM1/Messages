@@ -198,6 +198,11 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
         return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+
     private void requestSmsPermission() {
         String permission = Manifest.permission.SEND_SMS;
         int grant = ContextCompat.checkSelfPermission(getActivity(), permission);
@@ -315,5 +320,6 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
             }
         }
     }
+
 
 }

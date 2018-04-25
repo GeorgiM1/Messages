@@ -8,6 +8,13 @@ import java.util.ArrayList;
  */
 
 public class NewMessagesModel implements Serializable {
-    ArrayList<Integer> new_message_notice_id;
+    ArrayList<Integer> new_message_notice_ID;
 
+    public ArrayList<Integer> getNew_message_notice_ID() {
+        return new_message_notice_ID;
+    }
+
+    public void setNew_message_notice_ID(ArrayList<Integer> new_message_notice_ID) {
+        this.new_message_notice_ID = new_message_notice_ID;
+    }
 }
