@@ -1,6 +1,8 @@
 package com.example.android.messages;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,8 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -32,21 +34,36 @@ public class ContactsActivity extends AppCompatActivity {
     private ProgressDialog pDialog;
     private Handler updateBarHandler;
     private String phoneNumber = null;
-
     private String name = null;
-
+    private String phone = null;
     ArrayList<String> contactList;
     Cursor cursor;
     int counter;
     @BindView(R.id.Search_bar)
-    EditText mSearchBar;
+    SearchView mSearchBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
-//        mSearchBar.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.search), null,null,null);
 
+        setupSearchView();
+
+        mSearchBar.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                Intent intent = getIntent();
+                onNewIntent(intent);
+
+                return false;
+            }
+        });
         pDialog = new ProgressDialog(ContactsActivity.this);
         pDialog.setMessage("Reading contacts...");
         pDialog.setCancelable(false);
@@ -72,11 +89,15 @@ public class ContactsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Intent intent = getIntent();
-                intent.putExtra("phoneNumber", phoneNumber);
-                setResult(RESULT_OK,intent);
+                String contact = contactList.get(position);
+                String[] split = contact.split("\n");
+                String phone = split[split.length - 1];
+
+                intent.putExtra("phoneNumber", phone);
+                setResult(RESULT_OK, intent);
                 finish();
 
-             //   Toast.makeText(getApplicationContext(), "item clicked : \n" + contactList.get(position), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -107,6 +128,35 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
+            //handles suggestion clicked query
+            phone = getDisplayNameForContact(intent);
+            intent.putExtra("phoneNumberFromSearch", phone);
+            intent.putExtra("SEARCH_EXTRA", true);
+            setResult(RESULT_OK, intent);
+            finish();
+
+
+        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            // handles a search query
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+        }
+    }
+
+    private String getDisplayNameForContact(Intent intent) {
+        Cursor phoneCursor = getContentResolver().query(intent.getData(), null, null,null , null);
+        if (phoneCursor != null) {
+            phoneCursor.moveToFirst();
+        }
+        int idDisplayName = phoneCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+        phone = phoneCursor.getString((idDisplayName));
+        phoneCursor.close();
+        return phone;
+    }
+
     public void getContacts() {
 
         if (!mayRequestContacts()) {
@@ -117,6 +167,7 @@ public class ContactsActivity extends AppCompatActivity {
 
 
         String email = null;
+
 
         Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
         String _ID = ContactsContract.Contacts._ID;
@@ -134,8 +185,8 @@ public class ContactsActivity extends AppCompatActivity {
         StringBuffer output;
 
         ContentResolver contentResolver = getContentResolver();
-
         cursor = contentResolver.query(CONTENT_URI, null, null, null, null);
+
 
         // Iterate every contact in the phone
         if (cursor.getCount() > 0) {
@@ -197,7 +248,7 @@ public class ContactsActivity extends AppCompatActivity {
                     String sortOrder = ContactsContract.Contacts.DISPLAY_NAME;
 
                     Cursor birthdayCur = contentResolver.query(ContactsContract.Data.CONTENT_URI, columns, where, selectionArgs, sortOrder);
-                    Log.d("BDAY", birthdayCur.getCount()+"");
+                    Log.d("BDAY", birthdayCur.getCount() + "");
                     if (birthdayCur.getCount() > 0) {
                         while (birthdayCur.moveToNext()) {
                             String birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
@@ -232,6 +283,13 @@ public class ContactsActivity extends AppCompatActivity {
             }, 500);
         }
 
+    }
+
+    private void setupSearchView() {
+        SearchManager searchManager = (SearchManager) getSystemService(this.SEARCH_SERVICE);
+        final SearchView searchView = mSearchBar;
+        SearchableInfo searchableInfo = searchManager.getSearchableInfo(getComponentName());
+        searchView.setSearchableInfo(searchableInfo);
     }
 
 }

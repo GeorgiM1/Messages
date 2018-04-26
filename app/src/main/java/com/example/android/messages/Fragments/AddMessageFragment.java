@@ -313,10 +313,14 @@ public class AddMessageFragment extends android.support.v4.app.Fragment implemen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1000 && resultCode == RESULT_OK) {
 
-
-            if (data != null) {
-                mPhoneNumberEdittext.setText(data.getStringExtra("phoneNumber"));
-
+            String dataStringExtra = data.getStringExtra("phoneNumber");
+            if (dataStringExtra != null) {
+                String[] phone = dataStringExtra.split(" ");
+                mPhoneNumberEdittext.setText(phone[phone.length - 1]);
+            }
+            if (data.hasExtra("SEARCH_EXTRA")){
+                String searchDate = data.getStringExtra("phoneNumberFromSearch");
+                mPhoneNumberEdittext.setText(searchDate);
             }
         }
     }
